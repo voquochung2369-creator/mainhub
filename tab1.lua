@@ -1,13 +1,10 @@
-local Window = _G.CustomHubWindow
-
-
-local BloxFruit = Window:MakeTab({
-    Name = "BloxFruit"
+local Bloxfruit = Window:MakeTab({
+    Name = "Blox Fruit",
+    Icon = "",
+    PremiumOnly = false
 })
 
-
--- Dòng 1
-BloxFruit:AddButton({
+Bloxfruit:AddButton({
     Name = "Real Kid",
     Click = "Button",
 
@@ -20,9 +17,7 @@ BloxFruit:AddButton({
     end
 })
 
-
--- Dòng 2
-BloxFruit:AddButton({
+Bloxfruit:AddButton({
     Name = "lever no save",
     Click = "Lever",
     Default = false,
@@ -30,18 +25,12 @@ BloxFruit:AddButton({
 
     Callback = function(Value)
 
-        if Value then
-            print("lever no save ON")
-        else
-            print("lever no save OFF")
-        end
+        print(Value)
 
     end
 })
 
-
--- Dòng 3
-BloxFruit:AddButton({
+Bloxfruit:AddButton({
     Name = "lever save",
     Click = "Lever",
     Default = false,
@@ -49,11 +38,7 @@ BloxFruit:AddButton({
 
     Callback = function(Value)
 
-        if Value then
-            print("lever save ON")
-        else
-            print("lever save OFF")
-        end
+        print(Value)
 
     end
 })
