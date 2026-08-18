@@ -12,7 +12,7 @@ Bloxfruit:AddButton({
 
     Name = "Real Kid",
 
-    Click = "Button",
+    Click = "Leaver",
     Default = false,
     Callback = function()
 
