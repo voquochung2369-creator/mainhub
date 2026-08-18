@@ -1,16 +1,13 @@
 local Window = _G.CustomHubWindow
 
 
---------------------------------------------------
--- Bloxfruit (Dòng 1)
---------------------------------------------------
-
-local Bloxfruit = Window:MakeTab({
-    Name = "Bloxfruit"
+local BloxFruit = Window:MakeTab({
+    Name = "BloxFruit"
 })
 
 
-Bloxfruit:AddButton({
+-- Dòng 1
+BloxFruit:AddButton({
     Name = "Real Kid",
     Click = "Button",
 
@@ -24,17 +21,8 @@ Bloxfruit:AddButton({
 })
 
 
-
---------------------------------------------------
--- Bloxfruit2 (Dòng 2)
---------------------------------------------------
-
-local Bloxfruit2 = Window:MakeTab({
-    Name = "Bloxfruit2"
-})
-
-
-Bloxfruit2:AddButton({
+-- Dòng 2
+BloxFruit:AddButton({
     Name = "lever no save",
     Click = "Lever",
     Default = false,
@@ -52,17 +40,8 @@ Bloxfruit2:AddButton({
 })
 
 
-
---------------------------------------------------
--- Bloxfruit3 (Dòng 3)
---------------------------------------------------
-
-local Bloxfruit3 = Window:MakeTab({
-    Name = "Bloxfruit3"
-})
-
-
-Bloxfruit3:AddButton({
+-- Dòng 3
+BloxFruit:AddButton({
     Name = "lever save",
     Click = "Lever",
     Default = false,
