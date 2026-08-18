@@ -1,11 +1,17 @@
+local Window = _G.CustomHubWindow
+
+
 local Bloxfruit = Window:MakeTab({
-    Name = "Blox Fruit",
-    Icon = "",
-    PremiumOnly = false
+
+    Name = "Blox Fruit"
+
 })
 
+
 Bloxfruit:AddButton({
+
     Name = "Real Kid",
+
     Click = "Button",
 
     Callback = function()
@@ -15,12 +21,18 @@ Bloxfruit:AddButton({
         ))()
 
     end
+
 })
 
+
 Bloxfruit:AddButton({
+
     Name = "lever no save",
+
     Click = "Lever",
+
     Default = false,
+
     Save = false,
 
     Callback = function(Value)
@@ -28,12 +40,18 @@ Bloxfruit:AddButton({
         print(Value)
 
     end
+
 })
 
+
 Bloxfruit:AddButton({
+
     Name = "lever save",
+
     Click = "Lever",
+
     Default = false,
+
     Save = true,
 
     Callback = function(Value)
@@ -41,4 +59,5 @@ Bloxfruit:AddButton({
         print(Value)
 
     end
+
 })
