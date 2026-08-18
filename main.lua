@@ -1,11 +1,9 @@
 --// CustomHub Main.lua
 --// Core GUI + Window System + External Tabs Loader
 
-
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 local HttpService = game:GetService("HttpService")
-
 
 --------------------------------------------------
 -- SAVE
@@ -15,7 +13,6 @@ local SAVE_FILE = "CustomHub_Settings.json"
 
 local SavedData = {}
 
-
 local function CanUseFileSystem()
 
     return type(isfile) == "function"
@@ -23,7 +20,6 @@ local function CanUseFileSystem()
     and type(writefile) == "function"
 
 end
-
 
 
 local function LoadSavedData()
@@ -38,16 +34,22 @@ local function LoadSavedData()
     end
 
 
-    pcall(function()
+    local success,data = pcall(function()
 
-        SavedData = HttpService:JSONDecode(
+        return HttpService:JSONDecode(
             readfile(SAVE_FILE)
         )
 
     end)
 
-end
 
+    if success and type(data) == "table" then
+
+        SavedData = data
+
+    end
+
+end
 
 
 local function SaveData()
@@ -69,13 +71,11 @@ local function SaveData()
 end
 
 
-
 local function GetSave(key)
 
     return SavedData[key]
 
 end
-
 
 
 local function SetSave(key,value)
@@ -87,9 +87,7 @@ local function SetSave(key,value)
 end
 
 
-
 LoadSavedData()
-
 
 
 --------------------------------------------------
@@ -99,13 +97,12 @@ LoadSavedData()
 for _,v in ipairs({
 
     "HubUi",
-    "MenuUi"
+    "MenuUi",
+    "CloseGui"
 
 }) do
 
-
     local old = CoreGui:FindFirstChild(v)
-
 
     if old then
 
@@ -120,37 +117,27 @@ for _,v in ipairs({
 end
 
 
-
-
 --------------------------------------------------
 -- DRAG
 --------------------------------------------------
 
-
 local function MakeDraggable(frame,drag)
 
-
     local dragging = false
-
     local start
-
     local pos
-
 
 
     drag.InputBegan:Connect(function(input)
 
-
         if input.UserInputType == Enum.UserInputType.MouseButton1
         or input.UserInputType == Enum.UserInputType.Touch then
-
 
             dragging = true
 
             start = input.Position
 
             pos = frame.Position
-
 
 
             input.Changed:Connect(function()
@@ -165,18 +152,14 @@ local function MakeDraggable(frame,drag)
 
         end
 
-
     end)
-
 
 
     UserInputService.InputChanged:Connect(function(input)
 
-
         if not dragging then
             return
         end
-
 
 
         if input.UserInputType == Enum.UserInputType.MouseMovement
@@ -184,7 +167,6 @@ local function MakeDraggable(frame,drag)
 
 
             local delta = input.Position - start
-
 
 
             frame.Position = UDim2.new(
@@ -199,20 +181,14 @@ local function MakeDraggable(frame,drag)
 
         end
 
-
     end)
 
-
 end
-
-
-
 
 
 --------------------------------------------------
 -- HUB BUTTON
 --------------------------------------------------
-
 
 local HubUi = Instance.new("ScreenGui")
 
@@ -223,12 +199,9 @@ HubUi.ResetOnSpawn = false
 HubUi.Parent = CoreGui
 
 
-
 local HubButton = Instance.new("TextButton")
 
-
 HubButton.Name = "HubButton"
-
 
 HubButton.Parent = HubUi
 
@@ -280,10 +253,6 @@ HubButton.AutoButtonColor = false
 
 
 
---------------------------------------------------
--- BO TRÒN HUB BUTTON
---------------------------------------------------
-
 local HubCorner = Instance.new("UICorner")
 
 HubCorner.CornerRadius =
@@ -293,72 +262,29 @@ HubCorner.Parent = HubButton
 
 
 
-
---------------------------------------------------
--- VIỀN TRẮNG HUBUI
---------------------------------------------------
-
 local HubStroke = Instance.new("UIStroke")
-
 
 HubStroke.Name =
 "HubCircleStroke"
 
-
 HubStroke.Color =
 Color3.fromRGB(255,255,255)
-
 
 HubStroke.ApplyStrokeMode =
 Enum.ApplyStrokeMode.Border
 
-
-HubStroke.Parent = HubButton
-
-
-
--- trạng thái ẩn
-
 HubStroke.Thickness = 1
-
 
 HubStroke.Transparency = 0.45
 
-
-
-local HubCorner = Instance.new("UICorner")
-
-HubCorner.CornerRadius =
-UDim.new(1,0)
-
-HubCorner.Parent = HubButton
-
-
-
-
-local HubStroke = Instance.new("UIStroke")
-
-HubStroke.Color =
-Color3.new(1,1,1)
-
-HubStroke.Thickness = 1
-
-HubStroke.Transparency = .45
-
 HubStroke.Parent = HubButton
 
 
-
-
-
-
 --------------------------------------------------
--- MENU
+-- MENU UI
 --------------------------------------------------
-
 
 local MenuUi = Instance.new("ScreenGui")
-
 
 MenuUi.Name = "MenuUi"
 
@@ -369,11 +295,7 @@ MenuUi.Enabled = false
 MenuUi.Parent = CoreGui
 
 
-
-
-
 local MenuContainer = Instance.new("Frame")
-
 
 MenuContainer.Parent = MenuUi
 
@@ -390,73 +312,6 @@ Color3.fromRGB(60,60,60)
 
 
 MenuContainer.BorderSizePixel = 0
-
-
-
-
-
-local MenuScale = Instance.new("UIScale")
-
-MenuScale.Parent = MenuContainer
-
-
-
-local function UpdateScale()
-
-
-    local cam = workspace.CurrentCamera
-
-
-    if not cam then
-        return
-    end
-
-
-    local size = cam.ViewportSize
-
-
-
-    local scale = math.min(
-
-        size.X / 1600,
-
-        size.Y / 900
-
-    )
-
-
-
-    if scale < .75 then
-
-        scale = .75
-
-    end
-
-
-
-    if scale > 1.15 then
-
-        scale = 1.15
-
-    end
-
-
-
-    MenuScale.Scale = scale
-
-
-end
-
-
-
-UpdateScale()
-
-
-
-workspace.CurrentCamera:GetPropertyChangedSignal(
-"ViewportSize"
-):Connect(UpdateScale)
-
 --------------------------------------------------
 -- MENU DECORATION
 --------------------------------------------------
@@ -469,7 +324,6 @@ UDim.new(0,12)
 MenuCorner.Parent = MenuContainer
 
 
-
 local MenuStroke = Instance.new("UIStroke")
 
 MenuStroke.Color =
@@ -478,7 +332,6 @@ Color3.fromRGB(120,120,120)
 MenuStroke.Thickness = 1
 
 MenuStroke.Parent = MenuContainer
-
 
 
 
@@ -500,7 +353,6 @@ MenuTopBar.BorderSizePixel = 0
 
 
 
-
 local TopCorner = Instance.new("UICorner")
 
 TopCorner.CornerRadius =
@@ -510,9 +362,7 @@ TopCorner.Parent = MenuTopBar
 
 
 
-
 local MenuTitle = Instance.new("TextLabel")
-
 
 MenuTitle.Parent = MenuTopBar
 
@@ -539,15 +389,11 @@ Enum.TextXAlignment.Left
 
 
 
-
-
-
 --------------------------------------------------
 -- MINIMIZE
 --------------------------------------------------
 
 local MinimizeButton = Instance.new("TextButton")
-
 
 MinimizeButton.Parent = MenuTopBar
 
@@ -581,13 +427,11 @@ MinCorner.Parent = MinimizeButton
 
 
 
-
 --------------------------------------------------
--- CLOSE
+-- X BUTTON
 --------------------------------------------------
 
 local XButton = Instance.new("TextButton")
-
 
 XButton.Parent = MenuTopBar
 
@@ -621,14 +465,11 @@ XCorner.Parent = XButton
 
 
 
-
-
 --------------------------------------------------
--- HOTBAR
+-- HOTBAR GUI
 --------------------------------------------------
 
 local HotbarGui = Instance.new("Frame")
-
 
 HotbarGui.Name = "HotbarGui"
 
@@ -647,7 +488,6 @@ HotbarGui.BorderSizePixel = 0
 
 
 
-
 local HotCorner = Instance.new("UICorner")
 
 HotCorner.CornerRadius =
@@ -657,9 +497,7 @@ HotCorner.Parent = HotbarGui
 
 
 
-
 local HotbarTitle = Instance.new("TextLabel")
-
 
 HotbarTitle.Parent = HotbarGui
 
@@ -686,10 +524,7 @@ Enum.TextXAlignment.Left
 
 
 
-
-
 local HotbarContent = Instance.new("ScrollingFrame")
-
 
 HotbarContent.Parent = HotbarGui
 
@@ -703,9 +538,13 @@ HotbarContent.BackgroundTransparency = 1
 
 HotbarContent.BorderSizePixel = 0
 
-HotbarContent.ScrollBarThickness = 3
 
+-- chỉ hiện thanh kéo khi nhiều dòng
 
+HotbarContent.ScrollBarThickness = 0
+
+HotbarContent.AutomaticCanvasSize =
+Enum.AutomaticSize.Y
 
 
 local HotbarLayout = Instance.new("UIListLayout")
@@ -717,15 +556,30 @@ UDim.new(0,7)
 
 
 
+HotbarLayout:GetPropertyChangedSignal(
+"AbsoluteContentSize"
+):Connect(function()
+
+    if HotbarLayout.AbsoluteContentSize.Y >
+    HotbarContent.AbsoluteSize.Y then
+
+        HotbarContent.ScrollBarThickness = 3
+
+    else
+
+        HotbarContent.ScrollBarThickness = 0
+
+    end
+
+end)
 
 
 
 --------------------------------------------------
--- MAIN CONTENT
+-- MAIN GUI
 --------------------------------------------------
 
 local MainGui = Instance.new("Frame")
-
 
 MainGui.Name = "MainGui"
 
@@ -748,8 +602,6 @@ MainGui.BorderSizePixel = 0
 
 
 
-
-
 local MainCorner = Instance.new("UICorner")
 
 MainCorner.CornerRadius =
@@ -759,10 +611,7 @@ MainCorner.Parent = MainGui
 
 
 
-
-
 local MainTitle = Instance.new("TextLabel")
-
 
 MainTitle.Parent = MainGui
 
@@ -789,50 +638,217 @@ Enum.TextXAlignment.Left
 
 
 
-
-
 local MainContent = Instance.new("ScrollingFrame")
 
-
 MainContent.Parent = MainGui
-
 
 MainContent.Size =
 UDim2.new(1,-20,1,-55)
 
-
 MainContent.Position =
 UDim2.new(0,10,0,48)
-
 
 MainContent.BackgroundTransparency = 1
 
 MainContent.BorderSizePixel = 0
 
-MainContent.ScrollBarThickness = 4
 
+-- chỉ hiện thanh kéo khi nhiều dòng
 
+MainContent.ScrollBarThickness = 0
+
+MainContent.AutomaticCanvasSize =
+Enum.AutomaticSize.Y
 
 
 
 local MainLayout = Instance.new("UIListLayout")
 
-
 MainLayout.Parent = MainContent
-
 
 MainLayout.Padding =
 UDim.new(0,8)
 
 
 
+MainLayout:GetPropertyChangedSignal(
+"AbsoluteContentSize"
+):Connect(function()
+
+    if MainLayout.AbsoluteContentSize.Y >
+    MainContent.AbsoluteSize.Y then
+
+        MainContent.ScrollBarThickness = 4
+
+    else
+
+        MainContent.ScrollBarThickness = 0
+
+    end
+
+end)
+--------------------------------------------------
+-- CLOSE GUI
+--------------------------------------------------
+
+local CloseGui = Instance.new("ScreenGui")
+
+CloseGui.Name = "CloseGui"
+
+CloseGui.ResetOnSpawn = false
+
+CloseGui.Enabled = false
+
+CloseGui.Parent = CoreGui
+
+
+
+local CloseFrame = Instance.new("Frame")
+
+CloseFrame.Parent = CloseGui
+
+CloseFrame.Size =
+UDim2.new(0,350,0,140)
+
+CloseFrame.Position =
+UDim2.new(0.5,-175,0.5,-70)
+
+CloseFrame.BackgroundColor3 =
+Color3.fromRGB(65,65,65)
+
+CloseFrame.BorderSizePixel = 0
+
+
+
+local CloseCorner = Instance.new("UICorner")
+
+CloseCorner.CornerRadius =
+UDim.new(0,12)
+
+CloseCorner.Parent = CloseFrame
+
+
+
+local CloseStroke = Instance.new("UIStroke")
+
+CloseStroke.Color =
+Color3.fromRGB(0,0,0)
+
+CloseStroke.Thickness = 2
+
+CloseStroke.Parent = CloseFrame
+
+
+
+local ConfirmText = Instance.new("TextLabel")
+
+ConfirmText.Parent = CloseFrame
+
+ConfirmText.Size =
+UDim2.new(1,-20,0,55)
+
+ConfirmText.Position =
+UDim2.new(0,10,0,5)
+
+ConfirmText.BackgroundTransparency = 1
+
+ConfirmText.Text =
+"You want close Menu?"
+
+ConfirmText.TextColor3 =
+Color3.new(1,1,1)
+
+ConfirmText.TextSize = 17
+
+ConfirmText.Font =
+Enum.Font.GothamBold
+
+ConfirmText.TextXAlignment =
+Enum.TextXAlignment.Center
+
+
+
+--------------------------------------------------
+-- CANNEL
+--------------------------------------------------
+
+local Cannel = Instance.new("TextButton")
+
+Cannel.Parent = CloseFrame
+
+Cannel.Size =
+UDim2.new(0,134,0,44)
+
+Cannel.Position =
+UDim2.new(0,18,1,-57)
+
+Cannel.BackgroundColor3 =
+Color3.fromRGB(0,170,0)
+
+Cannel.Text =
+"Cannel"
+
+Cannel.TextColor3 =
+Color3.new(1,1,1)
+
+Cannel.TextSize = 16
+
+Cannel.Font =
+Enum.Font.GothamBold
+
+
+
+local CannelCorner = Instance.new("UICorner")
+
+CannelCorner.CornerRadius =
+UDim.new(0,8)
+
+CannelCorner.Parent = Cannel
+
+
+
+--------------------------------------------------
+-- CLOSE BUTTON
+--------------------------------------------------
+
+local CloseButton = Instance.new("TextButton")
+
+CloseButton.Parent = CloseFrame
+
+CloseButton.Size =
+UDim2.new(0,134,0,44)
+
+CloseButton.Position =
+UDim2.new(1,-152,1,-57)
+
+CloseButton.BackgroundColor3 =
+Color3.fromRGB(200,0,0)
+
+CloseButton.Text =
+"Close"
+
+CloseButton.TextColor3 =
+Color3.new(1,1,1)
+
+CloseButton.TextSize = 16
+
+CloseButton.Font =
+Enum.Font.GothamBold
+
+
+
+local CloseButtonCorner = Instance.new("UICorner")
+
+CloseButtonCorner.CornerRadius =
+UDim.new(0,8)
+
+CloseButtonCorner.Parent = CloseButton
 
 
 
 --------------------------------------------------
 -- WINDOW SYSTEM
 --------------------------------------------------
-
 
 local Window = {
 
@@ -843,24 +859,17 @@ local Window = {
 }
 
 
-
--- cho file ngoài dùng
-
 _G.CustomHubWindow = Window
 
 
 
-
-
 --------------------------------------------------
--- CLEAR
+-- CLEAR MAIN
 --------------------------------------------------
 
 local function ClearMain()
 
-
     for _,v in ipairs(MainContent:GetChildren()) do
-
 
         if v:IsA("GuiObject") then
 
@@ -868,25 +877,19 @@ local function ClearMain()
 
         end
 
-
     end
-
 
 end
 
 
 
-
-
 --------------------------------------------------
--- CANVAS
+-- UPDATE CANVAS
 --------------------------------------------------
 
 local function UpdateCanvas()
 
-
     task.defer(function()
-
 
         MainContent.CanvasSize =
         UDim2.new(
@@ -901,13 +904,9 @@ local function UpdateCanvas()
 
         )
 
-
     end)
 
-
 end
-
-
 
 
 
@@ -917,12 +916,9 @@ end
 
 local function SelectTab(tab)
 
-
     Window.CurrentTab = tab
 
-
     ClearMain()
-
 
     MainTitle.Text = tab.Name
 
@@ -935,6 +931,7 @@ local function SelectTab(tab)
 
 
         button.Parent = MainContent
+
 
         button.Size =
         UDim2.new(1,0,0,45)
@@ -964,7 +961,6 @@ local function SelectTab(tab)
 
 
 
-
         local corner = Instance.new("UICorner")
 
         corner.CornerRadius =
@@ -974,13 +970,9 @@ local function SelectTab(tab)
 
 
 
-
-
         button.MouseButton1Click:Connect(function()
 
-
             if typeof(data.Callback) == "function" then
-
 
                 task.spawn(function()
 
@@ -988,21 +980,18 @@ local function SelectTab(tab)
 
                 end)
 
-
             end
 
-
         end)
-
 
     end
 
 
-
     UpdateCanvas()
 
-
 end
+
+
 
 --------------------------------------------------
 -- MAKE TAB
@@ -1010,23 +999,16 @@ end
 
 function Window:MakeTab(data)
 
-
     data = data or {}
-
 
 
     local tab = {
 
-
         Name = data.Name or "Tab",
-
 
         Buttons = {}
 
-
     }
-
-
 
 
     table.insert(
@@ -1039,97 +1021,60 @@ function Window:MakeTab(data)
 
 
 
-
-
     local tabButton = Instance.new("TextButton")
-
 
 
     tabButton.Parent = HotbarContent
 
 
-
     tabButton.Size =
-
     UDim2.new(1,-5,0,42)
 
 
-
     tabButton.BackgroundColor3 =
-
     Color3.fromRGB(75,75,75)
 
 
-
     tabButton.Text =
-
     "   "..tab.Name
 
 
-
     tabButton.TextColor3 =
-
     Color3.new(1,1,1)
 
 
-
     tabButton.Font =
-
     Enum.Font.GothamBold
-
 
 
     tabButton.TextSize = 14
 
 
-
     tabButton.TextXAlignment =
-
     Enum.TextXAlignment.Left
-
-
-
 
 
 
     local corner = Instance.new("UICorner")
 
-
     corner.CornerRadius =
-
     UDim.new(0,7)
-
 
     corner.Parent = tabButton
 
 
 
-
-
-
     tabButton.MouseButton1Click:Connect(function()
 
-
         SelectTab(tab)
-
 
     end)
 
 
 
-
-
-
-    --------------------------------------------------
-    -- ADD BUTTON
-    --------------------------------------------------
-
-
     function tab:AddButton(info)
 
-
         info = info or {}
-
 
 
         table.insert(
@@ -1138,73 +1083,42 @@ function Window:MakeTab(data)
 
             {
 
-
                 Name = info.Name or "Button",
-
 
                 Callback = info.Callback
 
-
             }
-
 
         )
 
 
-
         if Window.CurrentTab == tab then
-
 
             SelectTab(tab)
 
-
         end
-
-
 
     end
 
 
 
-
-
-
     return tab
 
-
 end
-
-
-
-
-
-
 --------------------------------------------------
 -- DRAG
 --------------------------------------------------
 
-
 MakeDraggable(
-
     MenuContainer,
-
     MenuTopBar
-
 )
-
 
 
 MakeDraggable(
-
     HubButton,
-
     HubButton
-
 )
-
-
-
-
 
 
 
@@ -1212,48 +1126,37 @@ MakeDraggable(
 -- HUB OPEN
 --------------------------------------------------
 
-
 HubButton.MouseButton1Click:Connect(function()
 
+    if CloseGui.Enabled then
 
-    MenuUi.Enabled =
-    not MenuUi.Enabled
+        CloseGui.Enabled = false
 
+        MenuUi.Enabled = true
+
+        return
+
+    end
+
+
+    MenuUi.Enabled = not MenuUi.Enabled
 
 
     if MenuUi.Enabled then
-
-
-        -- MENU ĐANG MỞ
 
         HubStroke.Thickness = 2.5
 
         HubStroke.Transparency = 0.05
 
-
-
     else
-
-
-        -- MENU ĐANG ẨN
 
         HubStroke.Thickness = 1
 
         HubStroke.Transparency = 0.45
 
-
-
     end
 
-
 end)
-
-
-
-end)
-
-
-
 
 
 
@@ -1261,43 +1164,77 @@ end)
 -- MINIMIZE
 --------------------------------------------------
 
-
 MinimizeButton.MouseButton1Click:Connect(function()
 
-
     MenuUi.Enabled = false
-
-
 
     HubStroke.Thickness = 1
 
     HubStroke.Transparency = 0.45
 
-
-
 end)
 
 
 
-
-
-
 --------------------------------------------------
--- CLOSE
+-- X -> CLOSE GUI
 --------------------------------------------------
-
 
 XButton.MouseButton1Click:Connect(function()
 
-
     MenuUi.Enabled = false
 
+    CloseGui.Enabled = true
+
+    HubStroke.Thickness = 1
+
+    HubStroke.Transparency = 0.45
 
 end)
 
 
 
+--------------------------------------------------
+-- CANNEL
+--------------------------------------------------
 
+Cannel.MouseButton1Click:Connect(function()
+
+    CloseGui.Enabled = false
+
+    MenuUi.Enabled = true
+
+end)
+
+
+
+--------------------------------------------------
+-- CLOSE ALL
+--------------------------------------------------
+
+CloseButton.MouseButton1Click:Connect(function()
+
+    pcall(function()
+
+        HubUi:Destroy()
+
+    end)
+
+
+    pcall(function()
+
+        MenuUi:Destroy()
+
+    end)
+
+
+    pcall(function()
+
+        CloseGui:Destroy()
+
+    end)
+
+end)
 
 
 
@@ -1306,43 +1243,23 @@ end)
 --------------------------------------------------
 
 local Modules = {
-
-
     "https://raw.githubusercontent.com/TENBAN/CustomHub/main/Tabs/BloxFruit.lua",
-
-
     "https://raw.githubusercontent.com/TENBAN/CustomHub/main/Tabs/Setting.lua"
-
-
-
 }
-
 
 
 
 for _,url in ipairs(Modules) do
 
-
-
     pcall(function()
 
-
         loadstring(
-
             game:HttpGet(url)
-
         )()
-
-
 
     end)
 
-
-
 end
-
-
-
 
 
 
@@ -1350,19 +1267,13 @@ end
 -- DEFAULT TAB
 --------------------------------------------------
 
-
 task.wait(0.2)
-
 
 
 if Window.Tabs[1] then
 
-
     SelectTab(
-
         Window.Tabs[1]
-
     )
-
 
 end
