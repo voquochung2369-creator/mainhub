@@ -13,7 +13,7 @@ Bloxfruit:AddButton({
     Name = "Real Kid",
 
     Click = "Button",
-
+    Default = false,
     Callback = function()
 
         loadstring(game:HttpGet(
