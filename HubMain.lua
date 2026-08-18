@@ -758,14 +758,27 @@ function Window:MakeTab(data)
         local saved = GetSavedValue(info.SaveKey)
 
         if info.Click == "Lever" then
-            if info.Save and saved ~= nil then
-                info.Enabled = saved
-            else
-                info.Enabled = info.Default
-            end
-        end
 
-        table.insert(tab.Buttons, info)
+    if info.Save and saved ~= nil then
+        info.Enabled = saved
+    else
+        info.Enabled = info.Default
+    end
+
+
+    -- AUTO RUN SAVED LEVER
+    if info.Enabled and typeof(info.Callback) == "function" then
+
+        task.spawn(function()
+            pcall(function()
+                info.Callback(true)
+            end)
+        end)
+
+    end
+end
+
+table.insert(tab.Buttons, info)
 
         if Window.CurrentTab == tab then
             SelectTab(tab)
