@@ -1222,15 +1222,7 @@ end)
 --------------------------------------------------
 
 local Modules = {
-
-
-    "https://raw.githubusercontent.com/TENBAN/CustomHub/main/Tabs/BloxFruit.lua",
-
-
-    "https://raw.githubusercontent.com/TENBAN/CustomHub/main/Tabs/Setting.lua"
-
-
-
+    "https://raw.githubusercontent.com/voquochung2369-creator/mainhub/refs/heads/main/setting.lua"
 }
 
 
