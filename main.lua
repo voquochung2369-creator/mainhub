@@ -227,24 +227,102 @@ HubUi.Parent = CoreGui
 local HubButton = Instance.new("TextButton")
 
 
+HubButton.Name = "HubButton"
+
+
 HubButton.Parent = HubUi
 
-HubButton.Size = UDim2.new(0,45,0,45)
 
-HubButton.Position = UDim2.new(0,25,0.5,-22)
+HubButton.Size = UDim2.new(
+    0,
+    45,
+    0,
+    45
+)
+
+
+HubButton.Position = UDim2.new(
+    0,
+    25,
+    0.5,
+    -22
+)
+
 
 HubButton.BackgroundColor3 =
 Color3.fromRGB(25,25,25)
 
+
+HubButton.BackgroundTransparency = 0.18
+
+
+HubButton.BorderSizePixel = 0
+
+
 HubButton.Text = "H"
 
+
 HubButton.TextColor3 =
-Color3.new(1,1,1)
+Color3.fromRGB(255,255,255)
+
+
+HubButton.TextStrokeTransparency = 1
+
 
 HubButton.TextSize = 20
 
+
 HubButton.Font =
 Enum.Font.GothamBold
+
+
+HubButton.AutoButtonColor = false
+
+
+
+--------------------------------------------------
+-- BO TRÒN HUB BUTTON
+--------------------------------------------------
+
+local HubCorner = Instance.new("UICorner")
+
+HubCorner.CornerRadius =
+UDim.new(1,0)
+
+HubCorner.Parent = HubButton
+
+
+
+
+--------------------------------------------------
+-- VIỀN TRẮNG HUBUI
+--------------------------------------------------
+
+local HubStroke = Instance.new("UIStroke")
+
+
+HubStroke.Name =
+"HubCircleStroke"
+
+
+HubStroke.Color =
+Color3.fromRGB(255,255,255)
+
+
+HubStroke.ApplyStrokeMode =
+Enum.ApplyStrokeMode.Border
+
+
+HubStroke.Parent = HubButton
+
+
+
+-- trạng thái ẩn
+
+HubStroke.Thickness = 1
+
+
+HubStroke.Transparency = 0.45
 
 
 
@@ -1139,13 +1217,14 @@ HubButton.MouseButton1Click:Connect(function()
 
 
     MenuUi.Enabled =
-
     not MenuUi.Enabled
 
 
 
     if MenuUi.Enabled then
 
+
+        -- MENU ĐANG MỞ
 
         HubStroke.Thickness = 2.5
 
@@ -1156,6 +1235,8 @@ HubButton.MouseButton1Click:Connect(function()
     else
 
 
+        -- MENU ĐANG ẨN
+
         HubStroke.Thickness = 1
 
         HubStroke.Transparency = 0.45
@@ -1163,6 +1244,9 @@ HubButton.MouseButton1Click:Connect(function()
 
 
     end
+
+
+end)
 
 
 
@@ -1222,7 +1306,15 @@ end)
 --------------------------------------------------
 
 local Modules = {
-    "https://raw.githubusercontent.com/voquochung2369-creator/mainhub/refs/heads/main/setting.lua"
+
+
+    "https://raw.githubusercontent.com/TENBAN/CustomHub/main/Tabs/BloxFruit.lua",
+
+
+    "https://raw.githubusercontent.com/TENBAN/CustomHub/main/Tabs/Setting.lua"
+
+
+
 }
 
 
